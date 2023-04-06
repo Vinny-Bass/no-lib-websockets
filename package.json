@@ -1,0 +1,22 @@
+{
+  "name": "no-lib-websockets",
+  "version": "1.0.0",
+  "description": "no-lib-websockets is a repo that contains an lightweight and efficient WebSocket server implementation built from scratch using only Node.js internal libraries. This project demonstrates the power and flexibility of Node.js in creating real-time communication applications without relying on any external dependencies.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node --watch src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vinny-Bass/no-lib-websockets.git"
+  },
+  "keywords": [],
+  "author": "Vinny-Bass",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vinny-Bass/no-lib-websockets/issues"
+  },
+  "homepage": "https://github.com/Vinny-Bass/no-lib-websockets#readme"
+}
