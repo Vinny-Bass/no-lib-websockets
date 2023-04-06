@@ -21,9 +21,9 @@ Clone the repository to your local machine:
 ```bash
 git clone https://github.com/yourusername/no-lib-websockets.git
 ```
-Navigate to the project directory:
+Navigate to the server directory:
 ```bash
-cd no-lib-websockets
+cd no-lib-websockets/server
 ```
 
 Install Node.js if you haven't already (https://nodejs.org/en/download/)
@@ -31,10 +31,18 @@ Install Node.js if you haven't already (https://nodejs.org/en/download/)
 Run the WebSocket server:
 
 ```bash
-node server.js
+node run server
 ```
 
-Open the client.html file in your browser and start interacting with the WebSocket server.
+Navigate to the client directory
+```bash
+cd websocket-client
+```
+
+Run the Websocket Client
+```bash
+node run start
+```
 
 Please feel free to explore the codebase and experiment with modifications to enhance the functionality or performance of the application. Contributions, bug reports, and suggestions are always welcome.
 
