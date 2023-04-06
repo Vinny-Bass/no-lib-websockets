@@ -10,6 +10,11 @@ no-lib-websockets is a repo that contains an lightweight and efficient WebSocket
 - Demonstrates how to handle WebSocket connection lifecycle events
 - Provides a basic example of a real-time chat application
 
+## Why do it from scratch?
+
+- Is good to have a better understanding about websockets
+- Know how websockets works prevents you from use http pooling in real life problems :smile:
+
 ## Getting Started:
 
 Clone the repository to your local machine:
