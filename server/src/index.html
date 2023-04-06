@@ -20,7 +20,24 @@
     const socket = new WebSocket('ws://localhost:1337')
 
     // 3
-    socket.onopen = (event) => console.log('WebSocket is connected!')
+    socket.onopen = (event) => {
+      console.log('WebSocket is connected!')
+
+      const id = Math.round(Math.random() * 100)
+      console.log('sending...', id)
+
+      const data = JSON.stringify({
+        id,
+        name: `[${id}] Vinny Bass`,
+        address: {
+          street: 'my street',
+          number: 20 * id
+        },
+        profession: 'developer'
+      })
+
+      socket.send(data)
+    }
     // 4
     socket.onmessage = (msg) => {
       const message = msg.data
