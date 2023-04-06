@@ -5,7 +5,6 @@ const PORT = 1337;
 
 const server = createServer((req, res) => {
   res.writeHead(200);
-  res.end("Hello");
 }).listen(PORT, () => console.log("Server running on port ", PORT));
 
 const webSocketServer = new WebSocketServer();

@@ -7,6 +7,7 @@ const SIXTYFOUR_BITS_INTEGER_MARKER = 127 // as byte: 01111111
 const FIRST_BIT = 128
 const MASK_KEY_BYTES_LENGTH = 4
 const OPCODE_TEXT = 0x01
+const MAXIMUM_SIXTEEN_BITS_INTEGER = 2 ** 16
 
 
 class WebSocketServer {
@@ -58,11 +59,22 @@ class WebSocketServer {
     let dataFrameBuffer
 
     const firstByte = 0x80 | OPCODE_TEXT //bitwise operator
-
     if (messageSize <= SEVEN_BITS_INTEGER_MARKER) {
       const bytes = [firstByte]
       dataFrameBuffer = Buffer.from(bytes.concat(messageSize))
-    } else {
+    } else if (messageSize <= MAXIMUM_SIXTEEN_BITS_INTEGER) {
+      const offsetFourBytes = 4
+      const target = Buffer.allocUnsafe(offsetFourBytes)
+      target[0] = firstByte
+      // this is the mask indicator, 0 means unmasked
+      target[1] = SIXTEEN_BITS_INTEGER_MARKER | 0x0
+
+      // content length is 2 bytes
+      // according to the spreadsheet
+      target.writeUint16BE(messageSize, 2)
+      dataFrameBuffer = target
+    }
+    else {
       throw new Error('message too long buddy :(')
     }
 
@@ -81,10 +93,13 @@ class WebSocketServer {
     const lengthIndicatorInBits = markerAndPayloadLength - FIRST_BIT
 
     let messageLength = 0
-
     if (lengthIndicatorInBits <= SEVEN_BITS_INTEGER_MARKER) {
       messageLength = lengthIndicatorInBits
-    } else {
+    } else if (lengthIndicatorInBits === SIXTEEN_BITS_INTEGER_MARKER) {
+      // unsigned, big-endian 16-bit integer [0 - 65K] - 2 ** 16
+      messageLength = socket.read(2).readUint16BE(0)
+    }
+    else {
       throw new Error(
         `your message is too long! we don't handle more than 125 characters in the payload`
       )
@@ -93,19 +108,22 @@ class WebSocketServer {
     const maskKey = socket.read(MASK_KEY_BYTES_LENGTH)
     const encoded = socket.read(messageLength)
     const decoded = this.unmask(encoded, maskKey)
-    const received = decoded.toString('utf-8')
+    const received = decoded.toString('utf8')
 
-    this.sendMessage(received, socket)
+    const data = JSON.parse(received)
+    console.log('message received!', data)
 
-    // const data = JSON.parse(received)
-    // console.log('message received!', data)
+    const msg = JSON.stringify({
+      message: data,
+      at: new Date().toISOString()
+    })
+    this.sendMessage(msg, socket)
   }
 
   onSocketUpgrade(req, socket, head) {
     const { "sec-websocket-key": webClientSocketKey } = req.headers;
     const response = this.prepareHandshakeResponse(webClientSocketKey);
     socket.write(response);
-
     socket.on("readable", () => this.onSocketReadable(socket))
   }
 }

@@ -13,17 +13,36 @@ function App() {
       const id = Math.round(Math.random() * 100);
       console.log('sending...', id);
 
-      const data = JSON.stringify({
-        id,
-        name: `[${id}] Vinny Bass`,
-        address: {
-          street: 'my street',
-          number: 20 * id,
-        },
-        profession: 'developer',
-      });
+      const intervalId = setInterval(() => {
+        const data = JSON.stringify(
+          [
+            {
+              id,
+              name: `[${id}] Erick Wendel`,
+              address: {
+                street: 'my street',
+                number: 20 * id
+              },
+              profession: 'developer'
+            },
+            {
+              id,
+              name: `[${id}] Jose da Silva`,
+              address: {
+                street: 'my street',
+                number: 20 * id
+              },
+              profession: 'developer'
+            },
+          ]
+        )
 
-      socket.send(data);
+        socket.send(data)
+      }, 1000)
+
+      setTimeout(() => {
+        clearInterval(intervalId)
+      }, 5000);
     };
 
     socket.onmessage = (msg) => {
@@ -33,11 +52,12 @@ function App() {
     };
 
     socket.onerror = (error) => console.log('WebSocket error', error);
-
     socket.onclose = () => console.log('Disconnected from the WebSocket server');
 
     return () => {
-      socket.close();
+      if (socket.readyState === 1) {
+        socket.close();
+      }
     };
   }, []);
 
